@@ -2,69 +2,77 @@
 #include <locale.h>
 
 int main() {
-    // Configuração para aceitar acentos sem quebrar os decimais
-    setlocale(LC_CTYPE, "Portuguese");
+    setlocale(LC_ALL, "pt_BR.UTF-8");
 
-    // Variáveis da Carta 1
-    char estado1, codigo1[4], nome1[50];
-    unsigned long int populacao1; // Tipo solicitado para números grandes
-    float area1, pib1, densidade1, pibPerCapita1, superPoder1;
-    int pontos1;
+    // Dados das cartas (já pré-definidos para focar na lógica do menu)
+    char pais1[] = "Brasil", pais2[] = "Argentina";
+    unsigned long int pop1 = 214300000, pop2 = 45810000;
+    float area1 = 8515767.0, area2 = 2780400.0;
+    float pib1 = 1.61, pib2 = 0.49; // em trilhões
+    int pontos1 = 50, pontos2 = 35;
+    float densidade1 = pop1 / area1;
+    float densidade2 = pop2 / area2;
 
-    // Variáveis da Carta 2
-    char estado2, codigo2[4], nome2[50];
-    unsigned long int populacao2;
-    float area2, pib2, densidade2, pibPerCapita2, superPoder2;
-    int pontos2;
+    int opcao;
 
-    // --- ENTRADA DE DADOS: CARTA 1 ---
-    printf("--- Cadastro da Carta 1 ---\n");
-    printf("Estado (A-H): "); scanf(" %c", &estado1);
-    printf("Código: "); scanf("%s", codigo1);
-    printf("Cidade: "); scanf(" %[^\n]s", nome1);
-    printf("População: "); scanf("%lu", &populacao1);
-    printf("Área (km²): "); scanf("%f", &area1);
-    printf("PIB (bilhões): "); scanf("%f", &pib1);
-    printf("Pontos Turísticos: "); scanf("%d", &pontos1);
-
-    // Cálculos Carta 1
-    densidade1 = (float)populacao1 / area1;
-    pibPerCapita1 = (pib1 * 1000000000.0) / (float)populacao1;
-    // Super Poder: Soma de tudo (com inverso da densidade)
-    superPoder1 = (float)populacao1 + area1 + pib1 + (float)pontos1 + pibPerCapita1 + (1.0f / densidade1);
-
-    // --- ENTRADA DE DADOS: CARTA 2 ---
-    printf("\n--- Cadastro da Carta 2 ---\n");
-    printf("Estado (A-H): "); scanf(" %c", &estado2);
-    printf("Código: "); scanf("%s", codigo2);
-    printf("Cidade: "); scanf(" %[^\n]s", nome2);
-    printf("População: "); scanf("%lu", &populacao2);
-    printf("Área (km²): "); scanf("%f", &area2);
-    printf("PIB (bilhões): "); scanf("%f", &pib2);
-    printf("Pontos Turísticos: "); scanf("%d", &pontos2);
-
-    // Cálculos Carta 2
-    densidade2 = (float)populacao2 / area2;
-    pibPerCapita2 = (pib2 * 1000000000.0) / (float)populacao2;
-    superPoder2 = (float)populacao2 + area2 + pib2 + (float)pontos2 + pibPerCapita2 + (1.0f / densidade2);
-
-    // --- COMPARAÇÃO E RESULTADOS ---
-    // O resultado de uma comparação (x > y) em C é 1 (verdadeiro) ou 0 (falso)
+    // --- MENU INTERATIVO ---
+    printf("--- Super Trunfo: Escolha o Atributo de Comparação ---\n");
+    printf("1. População\n");
+    printf("2. Área\n");
+    printf("3. PIB\n");
+    printf("4. Pontos Turísticos\n");
+    printf("5. Densidade Demográfica\n");
+    printf("Escolha uma opção: ");
     
-    printf("\n=================================");
-    printf("\n   RESULTADO DA COMPARAÇÃO");
-    printf("\n=================================");
-    
-    // Para densidade, quem tem MENOR valor vence
-    printf("\nPopulação: Carta 1 venceu (%d)", populacao1 > populacao2);
-    printf("\nÁrea: Carta 1 venceu (%d)", area1 > area2);
-    printf("\nPIB: Carta 1 venceu (%d)", pib1 > pib2);
-    printf("\nPontos Turísticos: Carta 1 venceu (%d)", pontos1 > pontos2);
-    printf("\nDensidade Populacional: Carta 1 venceu (%d)", densidade1 < densidade2); // Lógica invertida
-    printf("\nPIB per Capita: Carta 1 venceu (%d)", pibPerCapita1 > pibPerCapita2);
-    printf("\nSuper Poder: Carta 1 venceu (%d)", superPoder1 > superPoder2);
-    
-    printf("\n=================================\n");
+    // Validação básica: se não ler um número, limpa o buffer
+    if (scanf("%d", &opcao) != 1) {
+        printf("Opção inválida! Digite apenas números.\n");
+        while(getchar() != '\n'); 
+        return 1;
+    }
+
+    printf("\n--- Resultado da Comparação ---\n");
+
+    // --- LÓGICA DE COMPARAÇÃO COM SWITCH ---
+    switch (opcao) {
+        case 1: // População (Maior vence)
+            printf("Atributo: População\n");
+            printf("%s: %lu | %s: %lu\n", pais1, pop1, pais2, pop2);
+            if (pop1 > pop2) {
+                printf("Vencedor: %s\n", pais1);
+            } else if (pop2 > pop1) {
+                printf("Vencedor: %s\n", pais2);
+            } else {
+                printf("Empate!\n");
+            }
+            break;
+
+        case 2: // Área (Maior vence)
+            printf("Atributo: Área\n");
+            printf("%s: %.2f | %s: %.2f\n", pais1, area1, pais2, area2);
+            if (area1 > area2) printf("Vencedor: %s\n", pais1);
+            else if (area2 > area1) printf("Vencedor: %s\n", pais2);
+            else printf("Empate!\n");
+            break;
+
+        case 5: // Densidade Demográfica (MENOR VENCE)
+            printf("Atributo: Densidade Demográfica\n");
+            printf("%s: %.2f hab/km² | %s: %.2f hab/km²\n", pais1, densidade1, pais2, densidade2);
+            
+            // Lógica invertida conforme o requisito
+            if (densidade1 < densidade2) {
+                printf("Vencedor: %s (Menor densidade)\n", pais1);
+            } else if (densidade2 < densidade1) {
+                printf("Vencedor: %s (Menor densidade)\n", pais2);
+            } else {
+                printf("Empate!\n");
+            }
+            break;
+
+        default:
+            printf("Opção inexistente no menu.\n");
+            break;
+    }
 
     return 0;
 }
