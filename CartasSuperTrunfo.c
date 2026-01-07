@@ -1,6 +1,8 @@
 #include <stdio.h>
+#include <locale.h> // 1. Inclua esta biblioteca
 
 int main() {
+    setlocale(LC_ALL, "pt_BR.UTF-8"); // 2. Configure a localização para português do Brasil
     // Variáveis para a Carta 1
     char estado1, codigo1[4], nomeCidade1[50];
     unsigned long int populacao1; // Usando unsigned para populações grandes
